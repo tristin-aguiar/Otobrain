@@ -9,6 +9,12 @@ import { deleteEntry, saveEntry } from "@/lib/actions";
 
 type Subsite = { id: number; name: string; sort: number };
 
+// Turns bare https:// links in a line into clickable links.
+function Linkify({ text }: { text: string }) {
+  const parts = text.split(/(https?:\/\/[^\s)]+)/g);
+  return <>{parts.map((p, i) => (/^https?:\/\//.test(p) ? <a key={i} href={p} target="_blank" rel="noreferrer">{p}</a> : p))}</>;
+}
+
 export function getSection(key: string): Section {
   const sec = (SECTIONS as Record<string, Section>)[key];
   if (!sec) notFound();
@@ -165,7 +171,7 @@ function renderField(f: Field, v: any) {
           {(v as Sec[]).map((s, i) => (
             <section key={i} className="card">
               <h2>{s.title}</h2>
-              <ul>{s.lines.map((l, j) => <li key={j}>{l}</li>)}</ul>
+              <ul>{s.lines.map((l, j) => <li key={j}><Linkify text={l} /></li>)}</ul>
             </section>
           ))}
         </div>
@@ -178,7 +184,7 @@ function renderField(f: Field, v: any) {
               <li key={i} className="card" style={{ display: "grid", gridTemplateColumns: "32px minmax(0,1fr)", gap: "4px 12px" }}>
                 <span aria-hidden="true" style={{ gridRow: "span 2", width: 28, height: 28, borderRadius: 14, background: "var(--accent-soft)", color: "var(--accent-ink)", fontSize: 13, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center" }}>{i + 1}</span>
                 <h2>{s.title}</h2>
-                <ul>{s.lines.map((l, j) => <li key={j}>{l}</li>)}</ul>
+                <ul>{s.lines.map((l, j) => <li key={j}><Linkify text={l} /></li>)}</ul>
               </li>
             ))}
           </ol>
