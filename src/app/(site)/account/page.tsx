@@ -5,7 +5,8 @@ async function save(formData: FormData) {
   "use server";
   const { supabase, user } = await getSessionProfile();
   if (!user) return;
-  const pgy = Number(formData.get("pgy")) || null;
+  const raw = String(formData.get("pgy") ?? "");
+  const pgy = raw === "" ? null : Number(raw);
   const update: Record<string, unknown> = { display_name: String(formData.get("display_name") || ""), pgy };
   const program = String(formData.get("program") || "").trim();
   if (program) update.program = program;
@@ -32,9 +33,10 @@ export default async function AccountPage() {
           <span className="hint">Program-only posts are shown based on this. Once set, ask the site admin to change it.</span>
         </label>
         <label className="field">
-          PGY level
+          Training level
           <select name="pgy" defaultValue={profile?.pgy ?? ""}>
             <option value="">Not set</option>
+            <option value={0}>Medical student</option>
             {[1, 2, 3, 4, 5, 6, 7].map((n) => (
               <option key={n} value={n}>PGY-{n}</option>
             ))}
