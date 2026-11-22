@@ -123,13 +123,9 @@ export async function ConsultGuideEntry({ slug, quick }: { slug: string; quick: 
 
       {!quick && (
         <>
-          <Section title="7. What to tell the primary team" empty={!has(g.chart_recommendations) && !has(g.discharge_instructions)}>
-            {has(g.chart_recommendations) && (<><h3 style={{ fontSize: 14, padding: "0 20px 6px", color: "var(--muted)" }}>Recommendations for the chart</h3><Para text={g.chart_recommendations} /></>)}
-            {has(g.discharge_instructions) && (<><h3 style={{ fontSize: 14, padding: "0 20px 6px", color: "var(--muted)" }}>Discharge instructions for the patient</h3><Para text={g.discharge_instructions} /></>)}
-          </Section>
-          <Section title="8. How to present it to your attending" empty={!has(g.attending_summary)}><Para text={g.attending_summary} /></Section>
-          <Section title="9. Pearls and pitfalls" empty={!has(g.pearls_pitfalls)}><Bullets items={g.pearls_pitfalls} /></Section>
-          <Section title="10. Deeper reading" empty={!has(g.deeper_reading)}><Bullets items={g.deeper_reading} /></Section>
+          <Section title="7. Discharge instructions" empty={!has(g.discharge_instructions)}><Para text={g.discharge_instructions} /></Section>
+          <Section title="8. Pearls and pitfalls" empty={!has(g.pearls_pitfalls)}><Bullets items={g.pearls_pitfalls} /></Section>
+          <Section title="9. Deeper reading" empty={!has(g.deeper_reading)}><Bullets items={g.deeper_reading} /></Section>
           <Notes itemType="consult_guide" itemId={g.id} path={base} label="My notes" placeholder="How my attendings handle this, what I learned the hard way…" />
         </>
       )}
