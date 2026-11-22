@@ -11,7 +11,8 @@ Never paste passwords or keys into a chat. They go only into the Supabase and Ve
 3. In the left menu open **SQL Editor** → **New query**.
 4. Open `supabase/migrations/0001_v1_schema.sql` in this repository on GitHub, click **Copy raw file**, paste it into the editor and click **Run**. It should say "Success. No rows returned".
 5. Click **New query** again and do the same with `supabase/migrations/0002_program_lock_and_authors.sql`.
-6. Open **Project Settings** → **API** (may be called **API Keys** or **Data API**). Keep this tab open: you need the **Project URL** and the **anon public** key (newer projects may call it the **publishable** key).
+6. Do the same once more with `supabase/migrations/0003_grant_signed_in_access.sql`. Newer Supabase projects need this so signed-in users can reach the tables.
+7. Open **Project Settings** → **API** (may be called **API Keys** or **Data API**). Keep this tab open: you need the **Project URL** and the **anon public** key (newer projects may call it the **publishable** key).
 
 ## 2. Put the site online (Vercel)
 
