@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Notes from "@/components/Notes";
 import Checklist from "@/components/Checklist";
+import Linkify from "@/components/Linkify";
+import { ConsultGuideEntry } from "@/components/consult-guide";
 import { getSessionProfile } from "@/lib/supabase/server";
 import { SECTIONS, TAG_CLASS, type Field, type Section } from "@/lib/library";
 import { blocksToText, fmtDate, linesToText, qaToText, rowsToText, sectionsToText, type Block, type QA, type Section as Sec } from "@/lib/format";
@@ -9,11 +11,7 @@ import { deleteEntry, saveEntry } from "@/lib/actions";
 
 type Subsite = { id: number; name: string; sort: number };
 
-// Turns bare https:// links in a line into clickable links.
-function Linkify({ text }: { text: string }) {
-  const parts = text.split(/(https?:\/\/[^\s)]+)/g);
-  return <>{parts.map((p, i) => (/^https?:\/\//.test(p) ? <a key={i} href={p} target="_blank" rel="noreferrer">{p}</a> : p))}</>;
-}
+
 
 export function getSection(key: string): Section {
   const sec = (SECTIONS as Record<string, Section>)[key];
@@ -282,6 +280,7 @@ function renderField(f: Field, v: any) {
 
 export async function LibraryEntry({ sectionKey, slug, filter, depth }: { sectionKey: string; slug: string; filter?: string; depth?: string }) {
   const sec = getSection(sectionKey);
+  if (sec.key === "consult-guides") return <ConsultGuideEntry slug={slug} quick={depth === "quick"} />;
   const { supabase, isAdmin, rows, subsites } = await loadIndex(sec);
   const { data: entry } = await supabase.from(sec.table).select("*").eq("slug", slug).maybeSingle();
   if (!entry) notFound();
