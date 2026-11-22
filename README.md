@@ -1,36 +1,19 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Otobrain
 
-## Getting Started
+An otolaryngology residency site: a shared learning library (curriculum, pathology, consult guides, radiology, basic science), a weekly post feed (This week in Otolaryngology) and, from version 2, private trackers for consults, procedures and research.
 
-First, run the development server:
+- **Setup:** see [SETUP.md](SETUP.md)
+- **Stack:** Next.js (App Router) on Vercel, Supabase for the database, logins and file storage
+- **Database:** `supabase/migrations/`, run in order in the Supabase SQL editor
+- **Security:** row-level security in the database keeps each user's notes, progress and files private; only admins can edit shared content
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Version 1
+- Login, night mode, account page (name, program, PGY)
+- Curriculum: three textbooks, chapter import, per-chapter status, scheduled date, pre-reading checklist, private PDF upload, reading notes, progress per book
+- Pathology, consult guides, radiology, basic science: grouped by anatomical subsite (consult guides by urgency), filters, admin editor with templates, drafts, private notes
+- This week in Otolaryngology: categories, pinned post, program-only posts, scheduled publishing, private notes
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Version 2 (planned)
+Dashboard, consult log, procedure tracker, research tracker, calendar with rotation blocks, radiology image uploads.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Rule for all content: no patient identifiers.
