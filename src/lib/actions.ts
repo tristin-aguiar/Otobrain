@@ -11,6 +11,13 @@ function readField(f: Section["fields"][number], formData: FormData) {
   const text = raw == null ? "" : String(raw);
   switch (f.type) {
     case "lines": return parseLines(text);
+    case "rich": {
+      // Keep the text exactly as written: blank lines, bullets and headings included.
+      const lines = text.split(/\r?\n/).map((l) => l.replace(/\s+$/, ""));
+      while (lines.length && !lines[0].trim()) lines.shift();
+      while (lines.length && !lines[lines.length - 1].trim()) lines.pop();
+      return lines;
+    }
     case "sections": return parseSections(text).filter((s) => s.lines.some((l) => l.trim()));
     case "blocks": return parseBlocks(text).filter((b) => b.body.trim());
     case "qa": return parseQA(text);

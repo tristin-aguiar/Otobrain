@@ -4,7 +4,7 @@
 
 export type FieldType =
   | "text" | "textarea" | "select" | "subsite" | "date"
-  | "lines" | "sections" | "blocks" | "qa" | "rows";
+  | "lines" | "rich" | "sections" | "blocks" | "qa" | "rows";
 
 // How a field appears on the entry page.
 export type Show =
@@ -83,19 +83,19 @@ export const SECTIONS: Record<Section["key"], Section> = {
       { name: "title", label: "Consult type", type: "text", show: "none", required: true, placeholder: "e.g. Epistaxis" },
       { name: "urgency", label: "Urgency tier", type: "select", options: ["Emergent", "Urgent", "Routine"], show: "none", required: true },
       { name: "subsite_id", label: "Anatomical subsite", type: "subsite", show: "none" },
-      { name: "consult_question", label: "1. Consult question", type: "textarea", show: "none", hint: "The question the calling team is asking, e.g. Patient with nosebleed not controlled with pressure." },
-      { name: "red_flags", label: "2. Triage and red flags", type: "lines", show: "none", hint: "How fast to go, and signs the patient needs attention now. One per line." },
-      { name: "focused_history", label: "3. Focused history", type: "lines", show: "none", hint: "Only the questions that change management. One per line." },
-      { name: "focused_exam", label: "4. Focused exam", type: "lines", show: "none", hint: "Only the findings that change management. One per line." },
-      { name: "workup", label: "5. Workup", type: "lines", show: "none", hint: "Labs and imaging, and when each is indicated." },
-      { name: "differential", label: "6. Differential diagnosis", type: "lines", show: "none", hint: "One diagnosis per line, most likely or most dangerous first." },
-      { name: "initial_management", label: "7. Initial management", type: "lines", show: "none", hint: "One step per line, in order. Use → for branches, e.g. Anterior bleed → silver nitrate cautery." },
-      { name: "escalation_management", label: "8. Definitive / escalation management", type: "lines", show: "none", hint: "What to do when initial management fails. One step per line; → for branches." },
+      { name: "consult_question", label: "1. Consult question", type: "textarea", show: "none", hint: "The question the calling team is asking. Start a line with - for a bullet, 1. for a numbered step, ## for a heading. Leave blank lines for space. **bold** works." },
+      { name: "red_flags", label: "2. Triage and red flags", type: "rich", show: "none", hint: "Start a line with - for a bullet, 1. for a numbered step, ## for a heading. Leave blank lines for space. **bold** works." },
+      { name: "focused_history", label: "3. Focused history", type: "rich", show: "none", hint: "Start a line with - for a bullet, 1. for a numbered step, ## for a heading. Leave blank lines for space. **bold** works." },
+      { name: "focused_exam", label: "4. Focused exam", type: "rich", show: "none", hint: "Start a line with - for a bullet, 1. for a numbered step, ## for a heading. Leave blank lines for space. **bold** works." },
+      { name: "workup", label: "5. Workup", type: "rich", show: "none", hint: "Start a line with - for a bullet, 1. for a numbered step, ## for a heading. Leave blank lines for space. **bold** works." },
+      { name: "differential", label: "6. Differential diagnosis", type: "rich", show: "none", hint: "Start a line with - for a bullet, 1. for a numbered step, ## for a heading. Leave blank lines for space. **bold** works." },
+      { name: "initial_management", label: "7. Initial management", type: "rich", show: "none", hint: "Start a line with - for a bullet, 1. for a numbered step, ## for a heading. Leave blank lines for space. **bold** works." },
+      { name: "escalation_management", label: "8. Definitive / escalation management", type: "rich", show: "none", hint: "Start a line with - for a bullet, 1. for a numbered step, ## for a heading. Leave blank lines for space. **bold** works." },
       { name: "linked_procedures", label: "Linked procedures (optional)", type: "lines", show: "none", hint: "Procedure names used in management, one per line. These connect to the procedure log in version 2." },
-      { name: "disposition", label: "9. Disposition and follow-up", type: "lines", show: "none", hint: "Admit vs. discharge criteria, and the follow-up interval." },
-      { name: "call_attending", label: "10. When to call the attending", type: "lines", show: "none", hint: "One trigger per line." },
-      { name: "pearls_pitfalls", label: "11. Pearls and pitfalls", type: "lines", show: "none", hint: "Things residents commonly miss. One per line." },
-      { name: "deeper_reading", label: "12. Key references", type: "lines", show: "none", hint: "Guidelines and papers with links, and library pages (e.g. /pathology/epistaxis). One per line." },
+      { name: "disposition", label: "9. Disposition and follow-up", type: "rich", show: "none", hint: "Start a line with - for a bullet, 1. for a numbered step, ## for a heading. Leave blank lines for space. **bold** works." },
+      { name: "call_attending", label: "10. When to call the attending", type: "rich", show: "none", hint: "Start a line with - for a bullet, 1. for a numbered step, ## for a heading. Leave blank lines for space. **bold** works." },
+      { name: "pearls_pitfalls", label: "11. Pearls and pitfalls", type: "rich", show: "none", hint: "Start a line with - for a bullet, 1. for a numbered step, ## for a heading. Leave blank lines for space. **bold** works." },
+      { name: "deeper_reading", label: "12. Key references", type: "rich", show: "none", hint: "Start a line with - for a bullet, 1. for a numbered step, ## for a heading. Leave blank lines for space. **bold** works." },
       { name: "reviewed_at", label: "Last reviewed", type: "date", show: "none" },
     ],
   },

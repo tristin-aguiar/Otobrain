@@ -344,6 +344,7 @@ function toText(f: Field, v: any): string {
   if (v == null) return "";
   switch (f.type) {
     case "lines": return linesToText(v);
+    case "rich": return (v as string[]).join("\n");
     case "sections": return sectionsToText(v);
     case "blocks": return blocksToText(v);
     case "qa": return qaToText(v);
@@ -366,7 +367,7 @@ export async function LibraryEditor({ sectionKey, slug, error }: { sectionKey: s
   }
   const save = saveEntry.bind(null, sec.key, entry?.id ?? null);
   const remove = entry ? deleteEntry.bind(null, sec.key, entry.id) : null;
-  const tall = (f: Field) => (f.type === "sections" || f.type === "blocks" ? 14 : f.type === "qa" || f.type === "rows" ? 6 : f.type === "lines" ? 5 : 3);
+  const tall = (f: Field) => (f.type === "sections" || f.type === "blocks" ? 14 : f.type === "rich" ? 8 : f.type === "qa" || f.type === "rows" ? 6 : f.type === "lines" ? 5 : 3);
 
   return (
     <>

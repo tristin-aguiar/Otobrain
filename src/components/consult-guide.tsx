@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Notes from "@/components/Notes";
-import Linkify from "@/components/Linkify";
+import RichText from "@/components/RichText";
 import { getSessionProfile } from "@/lib/supabase/server";
 import { TAG_CLASS } from "@/lib/library";
 import { fmtDate } from "@/lib/format";
@@ -10,7 +10,6 @@ import { fmtDate } from "@/lib/format";
 // the algorithm open, everything else collapsed, and a Quick view.
 
 const box: React.CSSProperties = { background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 12 };
-const listStyle: React.CSSProperties = { margin: 0, padding: "0 20px 16px 38px", display: "flex", flexDirection: "column", gap: 8, fontSize: 16, lineHeight: 1.5, color: "var(--ink)" };
 
 function Section({ title, open, children, empty }: { title: string; open?: boolean; children: React.ReactNode; empty: boolean }) {
   if (empty) return null;
@@ -25,41 +24,9 @@ function Section({ title, open, children, empty }: { title: string; open?: boole
   );
 }
 
-const Bullets = ({ items }: { items: string[] }) => (
-  <ul style={listStyle}>{items.map((t, i) => <li key={i}><Linkify text={t} /></li>)}</ul>
+const Body = ({ lines }: { lines: string[] | string | null }) => (
+  <div style={{ padding: "0 20px 18px" }}><RichText lines={lines} /></div>
 );
-
-function Algorithm({ steps, procedures }: { steps: string[]; procedures: string[] }) {
-  return (
-    <div style={{ padding: "0 16px 16px", display: "flex", flexDirection: "column", gap: 0 }}>
-      {steps.map((step, i) => {
-        const parts = step.split(/\s*(?:→|->)\s*/);
-        return (
-          <div key={i} style={{ display: "grid", gridTemplateColumns: "36px minmax(0,1fr)", gap: 12 }}>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-              <span style={{ width: 32, height: 32, borderRadius: 16, background: "var(--accent)", color: "var(--on-accent)", fontWeight: 600, fontSize: 15, display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>{i + 1}</span>
-              {i < steps.length - 1 && <span aria-hidden="true" style={{ flex: 1, width: 2, background: "var(--underline)", minHeight: 14 }} />}
-            </div>
-            <div style={{ paddingBottom: 16, display: "flex", flexWrap: "wrap", alignItems: "center", gap: "6px 8px", fontSize: 16, lineHeight: 1.45, paddingTop: 5 }}>
-              {parts.map((p, j) => (
-                <span key={j} style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-                  {j > 0 && <span aria-label="then" style={{ color: "var(--accent-ink)", fontWeight: 700 }}>→</span>}
-                  <span style={j === 0 ? { fontWeight: 600 } : undefined}><Linkify text={p} /></span>
-                </span>
-              ))}
-            </div>
-          </div>
-        );
-      })}
-      {procedures.length > 0 && (
-        <div className="row" style={{ paddingTop: 4 }}>
-          <span className="small muted">Procedures:</span>
-          {procedures.map((p) => <span key={p} className="pill" style={{ minHeight: 34 }}>{p}</span>)}
-        </div>
-      )}
-    </div>
-  );
-}
 
 export async function ConsultGuideEntry({ slug, quick }: { slug: string; quick: boolean }) {
   const { supabase, isAdmin } = await getSessionProfile();
@@ -99,39 +66,45 @@ export async function ConsultGuideEntry({ slug, quick }: { slug: string; quick: 
       {has(g.consult_question) && (
         <section style={{ ...box, padding: "14px 20px" }} aria-label="Consult question">
           <span className="small muted" style={{ fontWeight: 600 }}>1. Consult question</span>
-          <p style={{ margin: "4px 0 0", fontSize: 17, lineHeight: 1.45, whiteSpace: "pre-line" }}>{g.consult_question}</p>
+          <div style={{ marginTop: 6 }}><RichText lines={g.consult_question} size={17} /></div>
         </section>
       )}
 
       {has(g.red_flags) && (
         <section className="danger" aria-label="Triage and red flags" style={{ padding: "16px 20px" }}>
           <h2 style={{ fontSize: 17 }}>2. Triage and red flags</h2>
-          <ul style={{ fontSize: 16, gap: 8, lineHeight: 1.45 }}>{g.red_flags.map((t: string, i: number) => <li key={i}>{t}</li>)}</ul>
+          <div style={{ color: "var(--danger-ink)" }}><RichText lines={g.red_flags} /></div>
         </section>
       )}
 
       {!quick && (
         <>
-          <Section title="3. Focused history" empty={!has(g.focused_history)}><Bullets items={g.focused_history} /></Section>
-          <Section title="4. Focused exam" empty={!has(g.focused_exam)}><Bullets items={g.focused_exam} /></Section>
-          <Section title="5. Workup" empty={!has(g.workup)}><Bullets items={g.workup} /></Section>
-          <Section title="6. Differential diagnosis" empty={!has(g.differential)}><Bullets items={g.differential} /></Section>
+          <Section title="3. Focused history" empty={!has(g.focused_history)}><Body lines={g.focused_history} /></Section>
+          <Section title="4. Focused exam" empty={!has(g.focused_exam)}><Body lines={g.focused_exam} /></Section>
+          <Section title="5. Workup" empty={!has(g.workup)}><Body lines={g.workup} /></Section>
+          <Section title="6. Differential diagnosis" empty={!has(g.differential)}><Body lines={g.differential} /></Section>
         </>
       )}
 
       <Section title="7. Initial management" open empty={!has(g.initial_management)}>
-        <Algorithm steps={g.initial_management} procedures={[]} />
+        <Body lines={g.initial_management} />
       </Section>
       <Section title="8. Definitive / escalation management" open={quick} empty={!has(g.escalation_management) && !has(g.linked_procedures)}>
-        <Algorithm steps={g.escalation_management || []} procedures={g.linked_procedures || []} />
+        <Body lines={g.escalation_management} />
+        {has(g.linked_procedures) && (
+          <div className="row" style={{ padding: "0 20px 16px" }}>
+            <span className="small muted">Procedures:</span>
+            {g.linked_procedures.map((p: string) => <span key={p} className="pill" style={{ minHeight: 34 }}>{p}</span>)}
+          </div>
+        )}
       </Section>
-      <Section title="9. Disposition and follow-up" open={quick} empty={!has(g.disposition)}><Bullets items={g.disposition} /></Section>
-      <Section title="10. When to call the attending" open={quick} empty={!has(g.call_attending)}><Bullets items={g.call_attending} /></Section>
+      <Section title="9. Disposition and follow-up" open={quick} empty={!has(g.disposition)}><Body lines={g.disposition} /></Section>
+      <Section title="10. When to call the attending" open={quick} empty={!has(g.call_attending)}><Body lines={g.call_attending} /></Section>
 
       {!quick && (
         <>
-          <Section title="11. Pearls and pitfalls" empty={!has(g.pearls_pitfalls)}><Bullets items={g.pearls_pitfalls} /></Section>
-          <Section title="12. Key references" empty={!has(g.deeper_reading)}><Bullets items={g.deeper_reading} /></Section>
+          <Section title="11. Pearls and pitfalls" empty={!has(g.pearls_pitfalls)}><Body lines={g.pearls_pitfalls} /></Section>
+          <Section title="12. Key references" empty={!has(g.deeper_reading)}><Body lines={g.deeper_reading} /></Section>
           <Notes itemType="consult_guide" itemId={g.id} path={base} label="My notes" placeholder="How my attendings handle this, what I learned the hard way…" />
         </>
       )}
