@@ -28,9 +28,6 @@ function Section({ title, open, children, empty }: { title: string; open?: boole
 const Bullets = ({ items }: { items: string[] }) => (
   <ul style={listStyle}>{items.map((t, i) => <li key={i}><Linkify text={t} /></li>)}</ul>
 );
-const Para = ({ text }: { text: string | null }) => (
-  <p style={{ margin: 0, padding: "0 20px 16px", fontSize: 16, lineHeight: 1.55, whiteSpace: "pre-line" }}><Linkify text={text || ""} /></p>
-);
 
 function Algorithm({ steps, procedures }: { steps: string[]; procedures: string[] }) {
   return (
@@ -99,33 +96,42 @@ export async function ConsultGuideEntry({ slug, quick }: { slug: string; quick: 
         Log this consult <span className="small muted" style={{ fontWeight: 500 }}>· version 2</span>
       </span>
 
+      {has(g.consult_question) && (
+        <section style={{ ...box, padding: "14px 20px" }} aria-label="Consult question">
+          <span className="small muted" style={{ fontWeight: 600 }}>1. Consult question</span>
+          <p style={{ margin: "4px 0 0", fontSize: 17, lineHeight: 1.45, whiteSpace: "pre-line" }}>{g.consult_question}</p>
+        </section>
+      )}
+
       {has(g.red_flags) && (
-        <section className="danger" aria-label="Red flags" style={{ padding: "16px 20px" }}>
-          <h2 style={{ fontSize: 17 }}>Call your senior or attending now if</h2>
+        <section className="danger" aria-label="Triage and red flags" style={{ padding: "16px 20px" }}>
+          <h2 style={{ fontSize: 17 }}>2. Triage and red flags</h2>
           <ul style={{ fontSize: 16, gap: 8, lineHeight: 1.45 }}>{g.red_flags.map((t: string, i: number) => <li key={i}>{t}</li>)}</ul>
         </section>
       )}
 
       {!quick && (
         <>
-          <Section title="1. Before you see the patient" empty={!has(g.before_you_see)}><Bullets items={g.before_you_see} /></Section>
-          <Section title="2. What to bring" empty={!has(g.bring)}><Bullets items={g.bring} /></Section>
-          <Section title="3. Focused history and exam" empty={!has(g.history_exam)}><Bullets items={g.history_exam} /></Section>
-          <Section title="4. Workup" empty={!has(g.workup)}><Bullets items={g.workup} /></Section>
+          <Section title="3. Focused history" empty={!has(g.focused_history)}><Bullets items={g.focused_history} /></Section>
+          <Section title="4. Focused exam" empty={!has(g.focused_exam)}><Bullets items={g.focused_exam} /></Section>
+          <Section title="5. Workup" empty={!has(g.workup)}><Bullets items={g.workup} /></Section>
+          <Section title="6. Differential diagnosis" empty={!has(g.differential)}><Bullets items={g.differential} /></Section>
         </>
       )}
 
-      <Section title="5. Management algorithm" open empty={!has(g.algorithm)}>
-        <Algorithm steps={g.algorithm} procedures={g.linked_procedures || []} />
+      <Section title="7. Initial management" open empty={!has(g.initial_management)}>
+        <Algorithm steps={g.initial_management} procedures={[]} />
       </Section>
-
-      <Section title="6. Disposition" open={quick} empty={!has(g.disposition)}><Bullets items={g.disposition} /></Section>
+      <Section title="8. Definitive / escalation management" open={quick} empty={!has(g.escalation_management) && !has(g.linked_procedures)}>
+        <Algorithm steps={g.escalation_management || []} procedures={g.linked_procedures || []} />
+      </Section>
+      <Section title="9. Disposition and follow-up" open={quick} empty={!has(g.disposition)}><Bullets items={g.disposition} /></Section>
+      <Section title="10. When to call the attending" open={quick} empty={!has(g.call_attending)}><Bullets items={g.call_attending} /></Section>
 
       {!quick && (
         <>
-          <Section title="7. Discharge instructions" empty={!has(g.discharge_instructions)}><Para text={g.discharge_instructions} /></Section>
-          <Section title="8. Pearls and pitfalls" empty={!has(g.pearls_pitfalls)}><Bullets items={g.pearls_pitfalls} /></Section>
-          <Section title="9. Deeper reading" empty={!has(g.deeper_reading)}><Bullets items={g.deeper_reading} /></Section>
+          <Section title="11. Pearls and pitfalls" empty={!has(g.pearls_pitfalls)}><Bullets items={g.pearls_pitfalls} /></Section>
+          <Section title="12. Key references" empty={!has(g.deeper_reading)}><Bullets items={g.deeper_reading} /></Section>
           <Notes itemType="consult_guide" itemId={g.id} path={base} label="My notes" placeholder="How my attendings handle this, what I learned the hard way…" />
         </>
       )}
