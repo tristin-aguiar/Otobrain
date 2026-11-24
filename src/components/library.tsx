@@ -52,6 +52,9 @@ function Header({ sec, isAdmin, children }: { sec: Section; isAdmin: boolean; ch
       </div>
       <div className="row">
         {children}
+        {isAdmin && sec.key === "consult-guides" && (
+          <Link className="btn" href="/admin/import-guides">Import guides</Link>
+        )}
         {isAdmin && (
           <Link className="btn btn-primary" href={`/${sec.key}/new`}>
             + New {sec.noun}
