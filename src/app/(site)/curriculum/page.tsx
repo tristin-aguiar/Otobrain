@@ -58,7 +58,7 @@ export default async function CurriculumPage({ searchParams }: { searchParams: P
         </div>
       </header>
 
-      <section aria-label="Progress by textbook" className="grid-auto" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))" }}>
+      <section aria-label="Progress by textbook" className="grid-auto book-cards" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))" }}>
         {(books || []).map((b: any) => {
           const chs = (chapters || []).filter((c: any) => c.textbook_id === b.id);
           const n = (s: string) => chs.filter((c: any) => status(c) === s).length;
@@ -70,7 +70,7 @@ export default async function CurriculumPage({ searchParams }: { searchParams: P
                 <span style={{ fontSize: 16, fontWeight: 600 }}>{b.short_name}</span>
                 <span className="muted" style={{ fontSize: 12 }}>{b.edition ? `${b.edition} ed.` : "Edition not set"}</span>
               </div>
-              <span className="muted" style={{ fontSize: 12 }}>{b.full_title}</span>
+              <span className="muted hide-sm" style={{ fontSize: 12 }}>{b.full_title}</span>
               <div className="bar">
                 <span style={{ width: pct(n("Done")), background: "var(--accent)" }} />
                 <span style={{ width: pct(n("Reading")), background: "var(--info)" }} />
