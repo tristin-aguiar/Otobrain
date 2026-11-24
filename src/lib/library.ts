@@ -106,6 +106,7 @@ export const SECTIONS: Record<Section["key"], Section> = {
       { name: "call_attending", label: "10. When to call the attending", type: "rich", show: "none", hint: "Start a line with - for a bullet, 1. for a numbered step, ## for a heading. Leave blank lines for space. **bold** works." },
       { name: "pearls_pitfalls", label: "11. Pearls and pitfalls", type: "rich", show: "none", hint: "Start a line with - for a bullet, 1. for a numbered step, ## for a heading. Leave blank lines for space. **bold** works." },
       { name: "deeper_reading", label: "12. Key references", type: "rich", show: "none", hint: "Start a line with - for a bullet, 1. for a numbered step, ## for a heading. Leave blank lines for space. **bold** works." },
+      { name: "bring", label: "Recommended equipment", type: "lines", show: "none", hint: "One item per line. Shown as a tick-off checklist at the bottom of the guide." },
       { name: "reviewed_at", label: "Last reviewed", type: "date", show: "none" },
     ],
   },

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import ThemeToggle from "./ThemeToggle";
 
 type Item = { href: string; label: string; soon?: boolean };
@@ -35,6 +36,9 @@ export default function Sidebar({
   signOut: () => Promise<void>;
 }) {
   const path = usePathname();
+  const [open, setOpen] = useState(false);
+  // Close the phone menu after moving to another page.
+  useEffect(() => setOpen(false), [path]);
   const link = (it: Item) => {
     const active = path === it.href || path.startsWith(it.href + "/");
     if (it.soon) {
@@ -52,7 +56,8 @@ export default function Sidebar({
     );
   };
   return (
-    <nav className="sidebar" aria-label="Main">
+    <nav className={"sidebar" + (open ? " open" : "")} aria-label="Main">
+      <div className="sidebar-top">
       <Link href="/this-week" className="brand">
         <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
           <rect x="1" y="1" width="26" height="26" rx="7" fill="#0E6B6B" />
@@ -65,7 +70,19 @@ export default function Sidebar({
           </span>
         </span>
       </Link>
+      <button type="button" className="menu-button" aria-expanded={open} aria-controls="main-menu" onClick={() => setOpen(!open)}>
+        <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+          {open ? (
+            <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+          ) : (
+            <path d="M3 6h14M3 10h14M3 14h14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+          )}
+        </svg>
+        {open ? "Close" : "Menu"}
+      </button>
+      </div>
 
+      <div className="nav-body" id="main-menu">
       <div className="nav-group">{link(featured)}</div>
       <div className="nav-group">
         <span className="nav-label">My tracking</span>
@@ -93,6 +110,7 @@ export default function Sidebar({
             </button>
           </form>
         </div>
+      </div>
       </div>
     </nav>
   );

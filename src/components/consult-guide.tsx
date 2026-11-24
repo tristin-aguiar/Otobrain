@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Notes from "@/components/Notes";
 import RichText from "@/components/RichText";
+import Checklist from "@/components/Checklist";
 import { getSessionProfile } from "@/lib/supabase/server";
 import { GUIDE_SPEC_LABELS, SUBSPECIALTY_CLASS, TAG_CLASS } from "@/lib/library";
 import { fmtDate } from "@/lib/format";
@@ -108,6 +109,13 @@ export async function ConsultGuideEntry({ slug, quick }: { slug: string; quick: 
           <Section title="12. Key references" empty={!has(g.deeper_reading)}><Body lines={g.deeper_reading} /></Section>
           <Notes itemType="consult_guide" itemId={g.id} path={base} label="My notes" placeholder="How my attendings handle this, what I learned the hard way…" />
         </>
+      )}
+
+      {has(g.bring) && (
+        <section aria-label="Recommended equipment" style={{ ...box, padding: "16px 20px" }}>
+          <h2 style={{ fontSize: 17, fontWeight: 600, marginBottom: 6 }}>Recommended equipment</h2>
+          <Checklist items={g.bring} storageKey={`equipment:${g.slug}`} large />
+        </section>
       )}
     </div>
   );

@@ -296,7 +296,7 @@ export async function LibraryEntry({ sectionKey, slug, filter, depth }: { sectio
   return (
     <>
       <FilterChips sec={sec} active={filter} base={`/${sec.key}`} />
-      <div className="split">
+      <div className="split entry">
         <div className="side">
           <SideList sec={sec} groups={groups} activeSlug={slug} filter={filter} />
         </div>

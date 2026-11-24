@@ -100,7 +100,7 @@ export default async function CurriculumPage({ searchParams }: { searchParams: P
           <section aria-label="Chapters" className="table-box" style={{ flex: "3 1 520px", minWidth: 0 }}>
             <table className="data">
               <thead>
-                <tr><th scope="col" style={{ width: 52 }}>Ch.</th><th scope="col">Title</th><th scope="col">Subspecialty</th><th scope="col">Status</th><th scope="col">Scheduled</th><th scope="col">Pre-read</th><th scope="col">File</th></tr>
+                <tr><th scope="col" style={{ width: 52 }}>Ch.</th><th scope="col">Title</th><th scope="col" className="hide-sm">Subspecialty</th><th scope="col">Status</th><th scope="col" className="hide-sm">Scheduled</th><th scope="col" className="hide-sm">Pre-read</th><th scope="col" className="hide-sm">File</th></tr>
               </thead>
               <tbody>
                 {list.map((c: any) => {
@@ -109,12 +109,12 @@ export default async function CurriculumPage({ searchParams }: { searchParams: P
                   return (
                     <tr key={c.id} style={active ? { background: "var(--selected)" } : undefined}>
                       <td className="muted">{c.number}</td>
-                      <td><Link href={q({ ch: c.id })} style={{ fontWeight: 500, color: "var(--accent-ink)" }}>{c.title}</Link></td>
-                      <td><span className={"tag " + SUBSPECIALTY_CLASS[c.subspecialty]}>{c.subspecialty}</span></td>
+                      <td><Link href={q({ ch: c.id }) + "#chapter"} style={{ fontWeight: 500, color: "var(--accent-ink)" }}>{c.title}</Link></td>
+                      <td className="hide-sm"><span className={"tag " + SUBSPECIALTY_CLASS[c.subspecialty]}>{c.subspecialty}</span></td>
                       <td><span className={"tag " + STATUS_CLASS[status(c)]}>{status(c)}</span></td>
-                      <td className="muted" style={{ whiteSpace: "nowrap" }}>{p?.scheduled_for ? fmtDate(p.scheduled_for, { month: "short", day: "numeric" }) : "—"}</td>
-                      <td className="muted">{(p?.checklist_done || []).filter((i: number) => i < checklist.length).length}/{checklist.length}</td>
-                      <td style={{ fontSize: 12, color: p?.file_path ? "var(--ok)" : "var(--muted)" }}>{p?.file_path ? "PDF attached" : "Add file"}</td>
+                      <td className="muted hide-sm" style={{ whiteSpace: "nowrap" }}>{p?.scheduled_for ? fmtDate(p.scheduled_for, { month: "short", day: "numeric" }) : "—"}</td>
+                      <td className="muted hide-sm">{(p?.checklist_done || []).filter((i: number) => i < checklist.length).length}/{checklist.length}</td>
+                      <td className="hide-sm" style={{ fontSize: 12, color: p?.file_path ? "var(--ok)" : "var(--muted)" }}>{p?.file_path ? "PDF attached" : "Add file"}</td>
                     </tr>
                   );
                 })}
@@ -123,7 +123,7 @@ export default async function CurriculumPage({ searchParams }: { searchParams: P
           </section>
 
           {sel && (
-            <aside aria-label="Selected chapter" className="card" style={{ flex: "2 1 340px", minWidth: 0, gap: 18, padding: 20 }}>
+            <aside id="chapter" aria-label="Selected chapter" className="card" style={{ flex: "2 1 340px", minWidth: 0, gap: 18, padding: 20 }}>
               <div className="stack" style={{ gap: 6 }}>
                 <span className="muted" style={{ fontSize: 12 }}>{book?.short_name} · Chapter {sel.number}</span>
                 <h2 style={{ fontSize: 20 }}>{sel.title}</h2>
