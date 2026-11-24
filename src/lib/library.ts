@@ -17,6 +17,7 @@ export type Field = {
   type: FieldType;
   show: Show;
   options?: string[];
+  labels?: Record<string, string>;   // display names for option values
   rowKeys?: string[];      // for "rows"
   rowLabels?: string[];
   hint?: string;
@@ -34,7 +35,7 @@ export type Section = {
   noun: string;
   lead: string;
   titleField: string;
-  groupBy: { field: string; label: string; options?: string[] };  // options = fixed order; else subsites
+  groupBy: { field: string; label: string; options?: string[]; labels?: Record<string, string> };  // options = fixed order; else subsites
   filter?: { field: string; label: string; options: string[] };
   depthToggle?: boolean;
   fields: Field[];
@@ -42,6 +43,13 @@ export type Section = {
 
 const SUBSPECIALTIES = ["Head & neck", "Otology", "Rhinology", "Laryngology", "Facial plastics", "Pediatric", "Sleep", "General"];
 const YIELD = ["high", "medium", "low"];
+
+// Subspecialties used to organize consult guides, in display order.
+const GUIDE_SPECS = ["Head & neck", "Facial plastics", "Otology", "Rhinology", "Laryngology", "Pediatric"];
+export const GUIDE_SPEC_LABELS: Record<string, string> = {
+  "Head & neck": "Head and neck", "Facial plastics": "Facial plastics", Otology: "Otology/Neurotology",
+  Rhinology: "Rhinology", Laryngology: "Laryngology", Pediatric: "Pediatrics",
+};
 
 export const SECTIONS: Record<Section["key"], Section> = {
   pathology: {
@@ -76,11 +84,13 @@ export const SECTIONS: Record<Section["key"], Section> = {
     noteType: "consult_guide",
     title: "Consult guides",
     noun: "guide",
-    lead: "Built for the ED at 2 a.m. Every guide has the same 12 sections, with triage and management up front.",
+    lead: "Organized by subspecialty. Every guide has the same 12 sections, with triage and management up front.",
     titleField: "title",
-    groupBy: { field: "urgency", label: "Urgency", options: ["Emergent", "Urgent", "Routine"] },
+    groupBy: { field: "subspecialty", label: "Subspecialty", options: GUIDE_SPECS, labels: GUIDE_SPEC_LABELS },
+    filter: { field: "urgency", label: "Urgency", options: ["Emergent", "Urgent", "Routine"] },
     fields: [
       { name: "title", label: "Consult type", type: "text", show: "none", required: true, placeholder: "e.g. Epistaxis" },
+      { name: "subspecialty", label: "Subspecialty", type: "select", options: GUIDE_SPECS, labels: GUIDE_SPEC_LABELS, show: "none", required: true },
       { name: "urgency", label: "Urgency tier", type: "select", options: ["Emergent", "Urgent", "Routine"], show: "none", required: true },
       { name: "subsite_id", label: "Anatomical subsite", type: "subsite", show: "none" },
       { name: "consult_question", label: "1. Consult question", type: "textarea", show: "none", hint: "The question the calling team is asking. Start a line with - for a bullet, 1. for a numbered step, ## for a heading. Leave blank lines for space. **bold** works." },

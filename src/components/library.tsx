@@ -32,7 +32,7 @@ async function loadIndex(sec: Section) {
 function groupRows(sec: Section, rows: any[], subsites: Subsite[], filter?: string) {
   const visible = rows.filter((r) => !filter || !sec.filter || r[sec.filter.field] === filter);
   const groups = sec.groupBy.options
-    ? sec.groupBy.options.map((o) => ({ key: o, name: o }))
+    ? sec.groupBy.options.map((o) => ({ key: o, name: sec.groupBy.labels?.[o] ?? o }))
     : subsites.map((s) => ({ key: s.id, name: s.name }));
   const out = groups.map((g) => ({ ...g, items: visible.filter((r) => r[sec.groupBy.field] === g.key) }));
   const loose = visible.filter((r) => !groups.some((g) => g.key === r[sec.groupBy.field]));
@@ -386,7 +386,7 @@ export async function LibraryEditor({ sectionKey, slug, error }: { sectionKey: s
               {f.type === "select" && (
                 <select name={f.name} defaultValue={entry?.[f.name] ?? (f.required ? f.options?.[0] : "")} required={f.required}>
                   {!f.required && <option value="">Not set</option>}
-                  {f.options!.map((o) => <option key={o} value={o}>{o}</option>)}
+                  {f.options!.map((o) => <option key={o} value={o}>{f.labels?.[o] ?? o}</option>)}
                 </select>
               )}
               {f.type === "subsite" && (

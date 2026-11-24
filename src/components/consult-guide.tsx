@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Notes from "@/components/Notes";
 import RichText from "@/components/RichText";
 import { getSessionProfile } from "@/lib/supabase/server";
-import { TAG_CLASS } from "@/lib/library";
+import { GUIDE_SPEC_LABELS, SUBSPECIALTY_CLASS, TAG_CLASS } from "@/lib/library";
 import { fmtDate } from "@/lib/format";
 
 // Consult guide page, built for a phone in the ED: one column, red flags and
@@ -46,6 +46,7 @@ export async function ConsultGuideEntry({ slug, quick }: { slug: string; quick: 
 
       <header className="stack" style={{ gap: 8 }}>
         <div className="row">
+          {g.subspecialty && <span className={"tag " + (SUBSPECIALTY_CLASS[g.subspecialty] || "tag-plain")}>{GUIDE_SPEC_LABELS[g.subspecialty] ?? g.subspecialty}</span>}
           <span className={"tag " + (TAG_CLASS[g.urgency] || "tag-plain")}>{g.urgency}</span>
           {subsite && <span className="tag tag-plain">{subsite}</span>}
           {!g.published && <span className="tag tag-draft">Draft · only you can see this</span>}
